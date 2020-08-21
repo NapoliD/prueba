@@ -1,37 +1,27 @@
-from flask import Flask,request, url_for, redirect, render_template, jsonify
-import xgboost
-import pandas as pd
-import pickle
 import numpy as np
+from flask import Flask, request, jsonify, render_template
+import pickle
 
 app = Flask(__name__)
-model = pickle.load(open('XGB_Alquiler.sav', 'rb'))
+model = pickle.load(open('model.pkl', 'rb'))
 
 @app.route('/')
 def home():
-    return render_template("index.html")
+    return render_template('index.html')
 
 @app.route('/predict',methods=['POST'])
 def predict():
-
+    '''
+    For rendering results on HTML GUI
+    '''
     int_features = [int(x) for x in request.form.values()]
     final_features = [np.array(int_features)]
-    final_features = pd.DataFrame(final_features)
-    final_features.columns = ['barrio_cat', 'ambientes', 'm2']
     prediction = model.predict(final_features)
 
-    output = prediction
-    return render_template('index.html',prediction_text='Alquiler estimado {}'.format(output))
+    output = round(prediction[0], 2)
 
-@app.route('/predict_api',methods=['POST'])
-def predict_api():
-    data = request.get_json(force=True)
-    data = pd.DataFrame.from_dict(data)
+    return render_template('index.html', prediction_text='Employee Salary should be $ {}'.format(output))
 
-    prediction = model.predict(data)
 
-    output = prediction
-    return jsonify(output)
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
