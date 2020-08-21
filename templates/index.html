@@ -1,42 +1,27 @@
 <!DOCTYPE html>
 <html >
+<!--From https://codepen.io/frytyler/pen/EGdtg-->
 <head>
   <meta charset="UTF-8">
-  <title>Alquilers en CABA</title>
+  <title>ML API</title>
   <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
 <link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
 <link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
 <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
-<link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='./style.css') }}">
   
+</head>
 
-<body >
+<body>
  <div class="login">
-	<h1>Predictor de Alquiler</h1>
+	<h1>Predict Salary Analysis</h1>
 
      <!-- Main Input For Receiving Query to our ML -->
-     <h5>Seleccioná barrio y cantidad de ambientes</h5>
     <form action="{{ url_for('predict')}}"method="post">
-    	<!-- <input type="text" name="barrio_cat" placeholder="barrio_cat" required="required" />-->
-        <!--<input type="text" name="ambientes" placeholder="ambientes" required="required" />-->
-        <select name="barrio_cat" size="4" required="required" multiple>
-            <option value="0">ALMAGRO</option>
-            <option value="1">BELGRANO</option>
- 
-           </select>
-	<select name="ambientes" size="4" required="required" multiple>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-        </select>
-        
-        <input type="text" name="M2" placeholder="M2" required="required"/>
-        
+    	<input type="text" name="experience" placeholder="Experience" required="required" />
+        <input type="text" name="test_score" placeholder="Test Score" required="required" />
+		<input type="text" name="interview_score" placeholder="Interview Score" required="required" />
 
-
-        <button type="submit" class="btn btn-primary btn-block btn-large" >Estimar</button>
+        <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
     </form>
 
    <br>
@@ -44,5 +29,7 @@
    {{ prediction_text }}
 
  </div>
+
+
 </body>
 </html>
