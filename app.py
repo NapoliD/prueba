@@ -1,33 +1,36 @@
 from flask import Flask,request, url_for, redirect, render_template, jsonify
-from pycaret.regression import *
+import xgboost
 import pandas as pd
 import pickle
 import numpy as np
 
 app = Flask(__name__)
-
-model = load_model('deployment_28042020')
-cols = ['age', 'sex', 'bmi', 'children', 'smoker', 'region']
+model = pickle.load(open('XGB_Alquiler.sav', 'rb'))
 
 @app.route('/')
 def home():
-    return render_template("home.html")
+    return render_template("index.html")
 
 @app.route('/predict',methods=['POST'])
 def predict():
-    int_features = [x for x in request.form.values()]
-    final = np.array(int_features)
-    data_unseen = pd.DataFrame([final], columns = cols)
-    prediction = predict_model(model, data=data_unseen, round = 0)
-    prediction = int(prediction.Label[0])
-    return render_template('home.html',pred='Expected Bill will be {}'.format(prediction))
+
+    int_features = [int(x) for x in request.form.values()]
+    final_features = [np.array(int_features)]
+    final_features = pd.DataFrame(final_features)
+    final_features.columns = ['barrio_cat', 'ambientes', 'm2']
+    prediction = model.predict(final_features)
+
+    output = prediction
+    return render_template('index.html',prediction_text='Alquiler estimado {}'.format(output))
 
 @app.route('/predict_api',methods=['POST'])
 def predict_api():
     data = request.get_json(force=True)
-    data_unseen = pd.DataFrame([data])
-    prediction = predict_model(model, data=data_unseen)
-    output = prediction.Label[0]
+    data = pd.DataFrame.from_dict(data)
+
+    prediction = model.predict(data)
+
+    output = prediction
     return jsonify(output)
 
 if __name__ == '__main__':
